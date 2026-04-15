@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario Mundial</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 🟡 PORTADA -->
+<div id="cover" class="cover">
+  <div class="overlay"></div>
+  <div class="light-beams"></div>
+
+  <div class="cover-content">
+    <h1>CALENDARIO MUNDIAL</h1>
+    <p>Vive cada partido como si estuvieras en la cancha</p>
+    <button id="enterBtn">ENTRA A LA CANCHA ⚽</button>
+<img src="fifa-logo.png" class="fifa-logo">
+
+<p class="designed-by">Diseñado y desarrollado por Franklin Black</p>  </div>
+</div>
+
+<!-- 🔵 CONTENIDO -->
+<div id="app" class="app hidden">
+  <section id="favoritesScreen" class="favorites-screen">
+    <h2>¿Cuáles son tus 3 equipos favoritos?</h2>
+    <p class="favorites-subtitle">Elige hasta 3 selecciones para personalizar tu experiencia</p>
+
+    <div id="teamsGrid" class="teams-grid"></div>
+
+    <button id="continueBtn" class="continue-btn" disabled>CONTINUAR</button>
+  </section>
+
+  <section id="groupsScreen" class="groups-screen hidden">
+    <div class="groups-header">
+      <h2>FASE DE GRUPOS</h2>
+      <p>Toca un grupo para ver sus partidos</p>
+    </div>
+
+    <div id="groupsGrid" class="groups-grid"></div>
+  </section>
+
+  <section id="groupDetailScreen" class="group-detail-screen hidden">
+    <div class="group-detail-top">
+      <button id="backToGroupsBtn" class="back-btn">← VOLVER A GRUPOS</button>
+      <h2 id="groupDetailTitle">GRUPO A</h2>
+    </div>
+
+    <div id="groupTeamsHeader" class="group-teams-header"></div>
+
+    <div class="matches-table-header">
+  <div>HORA</div>
+  <div>ESTADIO</div>
+  <div>LOCAL</div>
+  <div>L</div>
+  <div>V</div>
+  <div>VISITANTE</div>
+</div>
+
+      <div id="matchesTableBody" class="matches-table-body"></div>
+    </div>
+  </section>
+</div>
+
+<audio id="goalSound" src="goal-sound.mp3"></audio>
+<script src="app.js"></script>
+</body>
+</html>
