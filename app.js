@@ -14,6 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const groupTeamsHeader = document.getElementById("groupTeamsHeader");
   const matchesTableBody = document.getElementById("matchesTableBody");
 
+const viewStandingsBtn = document.getElementById("viewStandingsBtn");
+const backToTopBtn = document.getElementById("backToTopBtn");
+const standingsSection = document.getElementById("standingsSection");
+
   const allTeams = [
     { name: "Canadá", code: "ca" },
     { name: "México", code: "mx" },
@@ -289,6 +293,13 @@ return `
 `).join("");
 
   bindScoreSelectors();
+const standingsTable = document.getElementById("standingsTable");
+
+standingsTable.innerHTML = `
+  <div class="match-empty">
+    Aquí irá la tabla de clasificación automática del Grupo ${groupLetter}.
+  </div>
+`;
 }
 
 function bindScoreSelectors() {
@@ -340,5 +351,19 @@ function bindScoreSelectors() {
   backToGroupsBtn.addEventListener("click", () => {
     groupDetailScreen.classList.add("hidden");
     groupsScreen.classList.remove("hidden");
+  });
+});
+
+viewStandingsBtn.addEventListener("click", () => {
+  standingsSection.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+backToTopBtn.addEventListener("click", () => {
+  groupDetailScreen.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
   });
 });

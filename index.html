@@ -44,9 +44,13 @@
 
   <section id="groupDetailScreen" class="group-detail-screen hidden">
     <div class="group-detail-top">
-      <button id="backToGroupsBtn" class="back-btn">← VOLVER A GRUPOS</button>
-      <h2 id="groupDetailTitle">GRUPO A</h2>
-    </div>
+  <div class="group-top-actions">
+    <button id="backToGroupsBtn" class="back-btn">← VOLVER A GRUPOS</button>
+    <button id="viewStandingsBtn" class="back-btn secondary-btn">VER CLASIFICACIÓN</button>
+  </div>
+
+  <h2 id="groupDetailTitle">GRUPO A</h2>
+</div>
 
     <div id="groupTeamsHeader" class="group-teams-header"></div>
 
@@ -60,6 +64,14 @@
 </div>
 
       <div id="matchesTableBody" class="matches-table-body"></div>
+<div id="standingsSection" class="standings-wrap">
+  <div class="standings-head">
+    <h3>CLASIFICACIÓN DEL GRUPO</h3>
+    <button id="backToTopBtn" class="back-btn secondary-btn">VOLVER ARRIBA ↑</button>
+  </div>
+
+  <div id="standingsTable"></div>
+</div>
     </div>
   </section>
 </div>
