@@ -272,13 +272,13 @@ return `
 
     <div>${match.home}</div>
 
-    <div>
+    <div class="match-score-mobile">
       <input type="number" min="0" class="goal-input"
         data-group="${groupLetter}" data-match="${idx}" data-side="home"
         value="${match.homeGoals}">
-    </div>
 
-    <div>
+      <span>-</span>
+
       <input type="number" min="0" class="goal-input"
         data-group="${groupLetter}" data-match="${idx}" data-side="away"
         value="${match.awayGoals}">

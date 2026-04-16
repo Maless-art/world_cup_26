@@ -530,3 +530,117 @@ button:hover {
 .goal-input[type=number] {
   -moz-appearance: textfield;
 }
+@media (max-width: 768px){
+
+  .group-detail-top{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .group-detail-top h2{
+    text-align: center;
+    font-size: 1.8rem;
+  }
+
+  .back-btn{
+    align-self: flex-start;
+  }
+
+  .group-teams-header{
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .group-team-chip{
+    justify-content: flex-start;
+    font-size: .95rem;
+  }
+
+  .matches-table-header{
+    display: none;
+  }
+
+  .matches-table-wrap{
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .matches-table-body{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .match-row{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #fff;
+    color: #111;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    border: none;
+  }
+
+  .match-row > div{
+    padding: 0;
+  }
+
+  .match-row > div:nth-child(1){
+    font-weight: 800;
+    font-size: 1rem;
+  }
+
+  .match-row > div:nth-child(2){
+    font-size: .95rem;
+    color: #444;
+  }
+
+  .match-row > div:nth-child(3),
+  .match-row > div:nth-child(6){
+    font-weight: 800;
+    font-size: 1rem;
+  }
+
+  .match-row > div:nth-child(4),
+  .match-row > div:nth-child(5){
+    display: inline-flex;
+    width: auto;
+  }
+
+  .match-row{
+    position: relative;
+  }
+
+  .match-row > div:nth-child(3){
+    margin-top: 6px;
+  }
+
+  .match-row > div:nth-child(4),
+  .match-row > div:nth-child(5){
+    display: inline-block;
+  }
+
+  .goal-input{
+    width: 56px;
+    height: 40px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 800;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    background: #fff;
+  }
+
+  .match-score-mobile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0;
+  }
+}
