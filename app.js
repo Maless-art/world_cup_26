@@ -10,13 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const groupDetailScreen = document.getElementById("groupDetailScreen");
 
   const backToGroupsBtn = document.getElementById("backToGroupsBtn");
+  const viewStandingsBtn = document.getElementById("viewStandingsBtn");
+  const backToTopBtn = document.getElementById("backToTopBtn");
+
   const groupDetailTitle = document.getElementById("groupDetailTitle");
   const groupTeamsHeader = document.getElementById("groupTeamsHeader");
   const matchesTableBody = document.getElementById("matchesTableBody");
-
-const viewStandingsBtn = document.getElementById("viewStandingsBtn");
-const backToTopBtn = document.getElementById("backToTopBtn");
-const standingsSection = document.getElementById("standingsSection");
+  const standingsSection = document.getElementById("standingsSection");
 
   const allTeams = [
     { name: "Canadá", code: "ca" },
@@ -84,79 +84,105 @@ const standingsSection = document.getElementById("standingsSection");
     L: ["Inglaterra", "Croacia", "Ghana", "Panamá"]
   };
 
-  // AQUÍ VAMOS A METER EL FIXTURE OFICIAL EN EL SIGUIENTE PASO
   const matchesByGroup = {
-  A: [
-    {
-      date: "11/06/2026",
-      time: "13:00",
-      stadium: "Mexico City Stadium",
-      home: "México",
-      away: "Sudáfrica",
-      homeGoals: 0,
-      awayGoals: 0
-    },
-    {
-      date: "11/06/2026",
-      time: "20:00",
-      stadium: "Guadalajara Stadium",
-      home: "Corea del Sur",
-      away: "Chequia",
-      homeGoals: 0,
-      awayGoals: 0
-    },
-    {
-      date: "18/06/2026",
-      time: "12:00",
-      stadium: "Atlanta Stadium",
-      home: "Chequia",
-      away: "Sudáfrica",
-      homeGoals: 0,
-      awayGoals: 0
-    },
-    {
-      date: "18/06/2026",
-      time: "19:00",
-      stadium: "Guadalajara Stadium",
-      home: "México",
-      away: "Corea del Sur",
-      homeGoals: 0,
-      awayGoals: 0
-    },
-    {
-      date: "24/06/2026",
-      time: "19:00",
-      stadium: "Monterrey Stadium",
-      home: "Sudáfrica",
-      away: "Corea del Sur",
-      homeGoals: 0,
-      awayGoals: 0
-    },
-    {
-      date: "24/06/2026",
-      time: "19:00",
-      stadium: "Mexico City Stadium",
-      home: "Chequia",
-      away: "México",
-      homeGoals: 0,
-      awayGoals: 0
-    }
-  ],
-  B: [],
-  C: [],
-  D: [],
-  E: [],
-  F: [],
-  G: [],
-  H: [],
-  I: [],
-  J: [],
-  K: [],
-  L: []
-};
+    A: [
+      {
+        date: "11/06/2026",
+        time: "13:00",
+        stadium: "Mexico City Stadium",
+        home: "México",
+        away: "Sudáfrica",
+        homeGoals: "",
+        awayGoals: ""
+      },
+      {
+        date: "11/06/2026",
+        time: "20:00",
+        stadium: "Guadalajara Stadium",
+        home: "Corea del Sur",
+        away: "Chequia",
+        homeGoals: "",
+        awayGoals: ""
+      },
+      {
+        date: "18/06/2026",
+        time: "12:00",
+        stadium: "Atlanta Stadium",
+        home: "Chequia",
+        away: "Sudáfrica",
+        homeGoals: "",
+        awayGoals: ""
+      },
+      {
+        date: "18/06/2026",
+        time: "19:00",
+        stadium: "Guadalajara Stadium",
+        home: "México",
+        away: "Corea del Sur",
+        homeGoals: "",
+        awayGoals: ""
+      },
+      {
+        date: "24/06/2026",
+        time: "19:00",
+        stadium: "Monterrey Stadium",
+        home: "Sudáfrica",
+        away: "Corea del Sur",
+        homeGoals: "",
+        awayGoals: ""
+      },
+      {
+        date: "24/06/2026",
+        time: "19:00",
+        stadium: "Mexico City Stadium",
+        home: "Chequia",
+        away: "México",
+        homeGoals: "",
+        awayGoals: ""
+      }
+    ],
+    B: [],
+    C: [],
+    D: [],
+    E: [],
+    F: [],
+    G: [],
+    H: [],
+    I: [],
+    J: [],
+    K: [],
+    L: []
+  };
 
   const selectedTeams = new Set();
+const savedMatches = localStorage.getItem("worldcup_matches");
+const savedFavorites = localStorage.getItem("worldcup_favorites");
 
+if (savedMatches) {
+  const parsedMatches = JSON.parse(savedMatches);
+
+  Object.keys(matchesByGroup).forEach(group => {
+    if (parsedMatches[group]) {
+      matchesByGroup[group] = parsedMatches[group];
+    }
+  });
+}
+
+
+
+if (savedFavorites) {
+  const parsedFavorites = JSON.parse(savedFavorites);
+
+  parsedFavorites.forEach(team => {
+    selectedTeams.add(team);
+  });
+}
+function saveFavorites() {
+  localStorage.setItem("worldcup_favorites", JSON.stringify([...selectedTeams]));
+}
+function saveMatches() {
+  localStorage.setItem("worldcup_matches", JSON.stringify(matchesByGroup));
+}
   function getTeamData(teamName) {
     return allTeams.find(t => t.name === teamName);
   }
@@ -175,32 +201,39 @@ const standingsSection = document.getElementById("standingsSection");
       const card = document.createElement("div");
       card.className = "team-card";
 
-      if (selectedTeams.has(team.name)) card.classList.add("selected");
+      if (selectedTeams.has(team.name)) {
+        card.classList.add("selected");
+      }
 
       card.innerHTML = `
         <img class="team-flag" src="${flagUrl(team.code)}" alt="${team.name}">
         <span class="team-name">${team.name}</span>
       `;
 
-      card.addEventListener("click", () => {
-        if (selectedTeams.has(team.name)) {
-          selectedTeams.delete(team.name);
-        } else {
-          if (selectedTeams.size >= 3) return;
-          selectedTeams.add(team.name);
-        }
+     card.addEventListener("click", () => {
+  if (selectedTeams.has(team.name)) {
+    selectedTeams.delete(team.name);
+  } else {
+    if (selectedTeams.size >= 3) return;
+    selectedTeams.add(team.name);
+  }
 
-        renderTeams();
-      });
+  saveFavorites();
+  renderTeams();
+});
 
       teamsGrid.appendChild(card);
     });
 
-    continueBtn.disabled = selectedTeams.size === 0;
+    if (continueBtn) {
+      continueBtn.disabled = selectedTeams.size === 0;
+    }
   }
 
   function renderGroups() {
     const groupsGrid = document.getElementById("groupsGrid");
+    if (!groupsGrid) return;
+
     groupsGrid.innerHTML = "";
 
     Object.entries(groupsData).forEach(([groupLetter, teams]) => {
@@ -211,13 +244,13 @@ const standingsSection = document.getElementById("standingsSection");
         const team = getTeamData(teamName);
         const isFavorite = selectedTeams.has(teamName);
 
-return `
-  <div class="group-team-row">
-    <img class="group-flag" src="${flagUrl(team.code)}" alt="${teamName}">
-    <span class="group-team-name">${teamName}</span>
-    ${isFavorite ? '<span class="favorite-star">★</span>' : ""}
-  </div>
-`;
+        return `
+          <div class="group-team-row">
+            <img class="group-flag" src="${flagUrl(team.code)}" alt="${teamName}">
+            <span class="group-team-name">${teamName}</span>
+            ${isFavorite ? '<span class="favorite-star">★</span>' : ""}
+          </div>
+        `;
       }).join("");
 
       card.innerHTML = `
@@ -233,96 +266,237 @@ return `
     });
   }
 
-  function openGroupDetail(groupLetter) {
-  const teams = groupsData[groupLetter];
-  const matches = matchesByGroup[groupLetter];
+  function calculateStandings(groupLetter) {
+    const teams = groupsData[groupLetter];
+    const matches = matchesByGroup[groupLetter];
 
-  favoritesScreen.classList.add("hidden");
-  groupsScreen.classList.add("hidden");
-  groupDetailScreen.classList.remove("hidden");
+    const table = {};
 
-  groupDetailTitle.textContent = `GRUPO ${groupLetter}`;
+    teams.forEach(team => {
+      table[team] = {
+        team,
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        gf: 0,
+        gc: 0,
+        dg: 0,
+        pts: 0
+      };
+    });
 
-  groupTeamsHeader.innerHTML = teams.map(teamName => {
-    const team = getTeamData(teamName);
-    const isFavorite = selectedTeams.has(teamName);
+   matches.forEach(match => {
+  const hasHome = match.homeGoals !== "" && match.homeGoals !== null;
+  const hasAway = match.awayGoals !== "" && match.awayGoals !== null;
 
-    return `
-      <div class="group-team-chip">
-        <img class="group-flag" src="${flagUrl(team.code)}" alt="${teamName}">
-        <span>${teamName}</span>
-        ${isFavorite ? '<span class="favorite-star">★</span>' : ""}
-      </div>
-    `;
-  }).join("");
+  if (!hasHome || !hasAway) return;
 
-  if (!matches.length) {
-    matchesTableBody.innerHTML = `
-      <div class="match-empty">
-        Este grupo todavía no tiene partidos cargados.
+  const home = table[match.home];
+  const away = table[match.away];
+
+  const hg = Number(match.homeGoals);
+  const ag = Number(match.awayGoals);
+
+  home.played++;
+  away.played++;
+
+  home.gf += hg;
+  home.gc += ag;
+  away.gf += ag;
+  away.gc += hg;
+
+  if (hg > ag) {
+    home.won++;
+    away.lost++;
+    home.pts += 3;
+  } else if (hg < ag) {
+    away.won++;
+    home.lost++;
+    away.pts += 3;
+  } else {
+    home.drawn++;
+    away.drawn++;
+    home.pts += 1;
+    away.pts += 1;
+  }
+});
+    Object.values(table).forEach(team => {
+      team.dg = team.gf - team.gc;
+    });
+
+    return Object.values(table).sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts;
+      if (b.dg !== a.dg) return b.dg - a.dg;
+      if (b.gf !== a.gf) return b.gf - a.gf;
+      return a.team.localeCompare(b.team);
+    });
+  }
+
+  function renderStandings(groupLetter) {
+  const standingsTable = document.getElementById("standingsTable");
+  if (!standingsTable) return;
+
+  const standings = calculateStandings(groupLetter);
+
+  if (!standings.some(t => t.played > 0)) {
+    standingsTable.innerHTML = `
+      <div class="standings-empty">
+        Aún no se han jugado partidos en este grupo.
       </div>
     `;
     return;
   }
 
-  matchesTableBody.innerHTML = matches.map((match, idx) => `
-  <div class="match-row">
-    <div>
-      <strong>${match.time}</strong><br>
-      <small>${match.date}</small>
-    </div>
+  standingsTable.innerHTML = standings.map((row, index) => {
+    const teamData = getTeamData(row.team);
+    const hasMatchesPlayed = standings.some(t => t.played > 0);
+    const topClass = (index < 2 && hasMatchesPlayed) ? "top-two" : "";
 
-    <div>${match.stadium}</div>
+    return `
+      <div class="standings-row ${topClass}">
+        <div>${index + 1}</div>
 
-    <div>${match.home}</div>
+        <div class="standings-team">
+          <img src="${flagUrl(teamData.code)}" alt="${row.team}">
+          <span>${row.team}</span>
+        </div>
 
-    <div class="match-score-mobile">
-      <input type="number" min="0" class="goal-input"
-        data-group="${groupLetter}" data-match="${idx}" data-side="home"
-        value="${match.homeGoals}">
-
-      <span>-</span>
-
-      <input type="number" min="0" class="goal-input"
-        data-group="${groupLetter}" data-match="${idx}" data-side="away"
-        value="${match.awayGoals}">
-    </div>
-
-    <div>${match.away}</div>
-  </div>
-`).join("");
-
-  bindScoreSelectors();
-const standingsTable = document.getElementById("standingsTable");
-
-standingsTable.innerHTML = `
-  <div class="match-empty">
-    Aquí irá la tabla de clasificación automática del Grupo ${groupLetter}.
-  </div>
-`;
+        <div>${row.played}</div>
+        <div>${row.won}</div>
+        <div>${row.drawn}</div>
+        <div>${row.lost}</div>
+        <div>${row.gf}</div>
+        <div>${row.gc}</div>
+        <div>${row.dg}</div>
+        <div><strong>${row.pts}</strong></div>
+      </div>
+    `;
+  }).join("");
 }
 
-function bindScoreSelectors() {
-  const inputs = document.querySelectorAll(".goal-input");
+  function bindScoreSelectors() {
+    const inputs = document.querySelectorAll(".goal-input");
 
-  inputs.forEach(input => {
-    input.addEventListener("input", (e) => {
-      const group = e.target.dataset.group;
-      const matchIndex = Number(e.target.dataset.match);
-      const side = e.target.dataset.side;
+    inputs.forEach(input => {
+      input.addEventListener("input", (e) => {
+        const group = e.target.dataset.group;
+        const matchIndex = Number(e.target.dataset.match);
+        const side = e.target.dataset.side;
 
-      let value = parseInt(e.target.value);
+        
+ if (e.target.value === "") {
+  if (side === "home") {
+    matchesByGroup[group][matchIndex].homeGoals = "";
+  } else {
+    matchesByGroup[group][matchIndex].awayGoals = "";
+  }
 
-      if (isNaN(value) || value < 0) value = 0;
+  renderStandings(group);
+  return;
+}
 
-      if (side === "home") {
-        matchesByGroup[group][matchIndex].homeGoals = value;
-      } else {
-        matchesByGroup[group][matchIndex].awayGoals = value;
-      }
+let value = parseInt(e.target.value, 10);
+
+if (isNaN(value) || value < 0) value = 0;
+
+e.target.value = value;
+
+if (side === "home") {
+  matchesByGroup[group][matchIndex].homeGoals = value;
+} else {
+  matchesByGroup[group][matchIndex].awayGoals = value;
+}
+
+renderStandings(group);
+
+
+        if (side === "home") {
+          matchesByGroup[group][matchIndex].homeGoals = value;
+        } else {
+          matchesByGroup[group][matchIndex].awayGoals = value;
+        }
+saveMatches();
+        renderStandings(group);
+      });
     });
-  });
-}
+  }
+
+  function openGroupDetail(groupLetter) {
+    const teams = groupsData[groupLetter];
+    const matches = matchesByGroup[groupLetter];
+
+    favoritesScreen.classList.add("hidden");
+    groupsScreen.classList.add("hidden");
+    groupDetailScreen.classList.remove("hidden");
+
+    groupDetailTitle.textContent = `GRUPO ${groupLetter}`;
+
+    groupTeamsHeader.innerHTML = teams.map(teamName => {
+      const team = getTeamData(teamName);
+      const isFavorite = selectedTeams.has(teamName);
+
+      return `
+        <div class="group-team-chip">
+          <img class="group-flag" src="${flagUrl(team.code)}" alt="${teamName}">
+          <span>${teamName}</span>
+          ${isFavorite ? '<span class="favorite-star">★</span>' : ""}
+        </div>
+      `;
+    }).join("");
+
+    if (!matches.length) {
+      matchesTableBody.innerHTML = `
+        <div class="match-empty">
+          Este grupo todavía no tiene partidos cargados.
+        </div>
+      `;
+      renderStandings(groupLetter);
+      return;
+    }
+
+    matchesTableBody.innerHTML = matches.map((match, idx) => `
+      <div class="match-row">
+        <div>
+          <strong>${match.time}</strong><br>
+          <small>${match.date}</small>
+        </div>
+
+        <div>${match.stadium}</div>
+
+        <div>${match.home}</div>
+
+        <div class="match-score-mobile">
+          <input
+            type="number"
+            min="0"
+            class="goal-input"
+            data-group="${groupLetter}"
+            data-match="${idx}"
+            data-side="home"
+            value="${match.homeGoals}"
+          >
+
+          <span>-</span>
+
+          <input
+            type="number"
+            min="0"
+            class="goal-input"
+            data-group="${groupLetter}"
+            data-match="${idx}"
+            data-side="away"
+            value="${match.awayGoals}"
+          >
+        </div>
+
+        <div>${match.away}</div>
+      </div>
+    `).join("");
+
+    bindScoreSelectors();
+    renderStandings(groupLetter);
+  }
 
   if (enterBtn) {
     enterBtn.addEventListener("click", () => {
@@ -341,29 +515,37 @@ function bindScoreSelectors() {
     });
   }
 
-  continueBtn.addEventListener("click", () => {
-    favoritesScreen.classList.add("hidden");
-    groupDetailScreen.classList.add("hidden");
-    groupsScreen.classList.remove("hidden");
-    renderGroups();
-  });
+  if (continueBtn) {
+    continueBtn.addEventListener("click", () => {
+      favoritesScreen.classList.add("hidden");
+      groupDetailScreen.classList.add("hidden");
+      groupsScreen.classList.remove("hidden");
+      renderGroups();
+    });
+  }
 
-  backToGroupsBtn.addEventListener("click", () => {
-    groupDetailScreen.classList.add("hidden");
-    groupsScreen.classList.remove("hidden");
-  });
-});
+  if (backToGroupsBtn) {
+    backToGroupsBtn.addEventListener("click", () => {
+      groupDetailScreen.classList.add("hidden");
+      groupsScreen.classList.remove("hidden");
+    });
+  }
 
-viewStandingsBtn.addEventListener("click", () => {
-  standingsSection.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-});
+  if (viewStandingsBtn) {
+    viewStandingsBtn.addEventListener("click", () => {
+      standingsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+  }
 
-backToTopBtn.addEventListener("click", () => {
-  groupDetailScreen.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener("click", () => {
+      groupDetailScreen.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+  }
 });
