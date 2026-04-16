@@ -663,20 +663,24 @@ button:hover {
 .secondary-btn:hover{
   background:#f0f0f0;
 }
-@media (max-width: 768px){
-
-  .group-top-actions{
-    gap:8px;
+@media (max-width: 480px){
+  #backToGroupsBtn{
+    font-size:0; /* oculta texto */
   }
 
-  .back-btn,
-  .secondary-btn{
-    padding:6px 10px;      /* ↓ más pequeños */
-    font-size:0.75rem;     /* ↓ texto más chico */
-    border-radius:999px;
-    white-space: nowrap;   /* evita que se rompa en dos líneas */
+  #backToGroupsBtn::after{
+    content:"←";
+    font-size:1rem;
   }
 
+  #viewStandingsBtn{
+    font-size:0;
+  }
+
+  #viewStandingsBtn::after{
+    content:"CLASIF.";
+    font-size:0.75rem;
+  }
 }
 .standings-wrap{
   margin-top: 24px;
