@@ -700,7 +700,7 @@ button:hover {
 
 @media (max-width: 768px){
   .group-top-actions{
-    flex-direction:column;
+    flex-direction:row;
     align-items:flex-start;
     width:100%;
   }
