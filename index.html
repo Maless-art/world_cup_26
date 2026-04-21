@@ -5,22 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calendario Mundial</title>
   <link rel="stylesheet" href="style.css">
+
+<meta name="theme-color" content="#0b0b0b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Calendario Mundial">
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 </head>
 <body>
 
 <!-- 🟡 PORTADA -->
+
+
+
 <div id="cover" class="cover">
   <div class="overlay"></div>
   <div class="light-beams"></div>
+
+<div class="footer-credit">
+  <p class="designed-by">Diseñado y desarrollado por Franklin Black</p>
+  <p class="year">2026</p>
+  <p class"version">v1.0</p>
+</div>
+
+  <div class="host-logos">
+   <img src="logo-usa.png" class="host usa" alt="USA">
+<img src="logo-canada.png" class="host canada" alt="Canadá">
+<img src="logo-mexico.png" class="host mexico" alt="México">
+
+  </div>
 
   <div class="cover-content">
     <h1>CALENDARIO MUNDIAL</h1>
     <p>Vive cada partido como si estuvieras en la cancha</p>
     <button id="enterBtn">ENTRA A LA CANCHA ⚽</button>
-<img src="fifa-logo.png" class="fifa-logo">
+    <img src="fifa-logo.png" class="fifa-logo" alt="FIFA 2026">
 
-<p class="designed-by">Diseñado y desarrollado por Franklin Black</p>  </div>
+    <div class="sponsor">
+      <p>Patrocinado por:</p>
+     <img src="logo-rm.png" class="roadmaster" alt="Road Master">
+    </div>
+  </div>
 </div>
+
 
 <!-- 🔵 CONTENIDO -->
 <div id="app" class="app hidden">
@@ -88,6 +118,11 @@
   </div>
 
   <div id="standingsTable"></div>
+<div class="next-round-wrap">
+  <button id="nextRoundBtn" class="next-round-btn">
+    Siguiente Ronda
+  </button>
+</div>
 </div>
 </div>
     </div>
