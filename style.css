@@ -947,3 +947,155 @@ align:top
 .next-round-btn:active{
   transform: scale(0.97);
 }
+
+
+.third-place-picker{
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+.third-place-picker option{
+  color: #111;
+}
+
+.third-place-picker option:disabled{
+  color: #888;
+}
+
+.knockout-bracket-two-sides{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-top: 20px;
+}
+
+.knockout-side{
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.knockout-left .knockout-card{
+  margin-right: auto;
+  width: min(100%, 340px);
+}
+
+.knockout-right .knockout-card{
+  margin-left: auto;
+  width: min(100%, 340px);
+}
+
+.knockout-card{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.knockout-meta{
+  font-size: 12px;
+  opacity: 0.85;
+  margin-bottom: 8px;
+}
+
+.knockout-team,
+.third-place-picker{
+  width: 100%;
+  box-sizing: border-box;
+  margin: 6px 0;
+}
+
+.knockout-vs{
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.knockout-full-grid{
+  display: grid;
+  grid-template-columns: repeat(9, 220px);
+  gap: 24px;
+  align-items: start;
+  width: max-content;
+  min-width: 100%;
+}
+
+.knockout-col{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.knockout-round-block h3{
+  text-align:center;
+  margin-bottom:14px;
+  font-size:14px;
+}
+#knockoutRounds{
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 12px;
+}
+
+.knockout-screen{
+  overflow-x: auto;
+}
+
+.knockout-list{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.knockout-score-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:10px 0;
+}
+
+.knockout-goal-input{
+  width:52px;
+  height:34px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  text-align:center;
+  font-size:16px;
+  outline:none;
+}
+
+.knockout-score-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-top:12px;
+}
+
+.knockout-goal-input{
+  width:52px;
+  height:34px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  text-align:center;
+  font-size:16px;
+  outline:none;
+}
+
+.knockout-score-sep{
+  color:#fff;
+  font-weight:700;
+}

@@ -73,62 +73,74 @@
     <div id="groupsGrid" class="groups-grid"></div>
   </section>
 
+
   <section id="groupDetailScreen" class="group-detail-screen hidden">
-    <div class="group-detail-top">
-  <div class="group-top-actions">
-    <button id="backToGroupsBtn" class="back-btn">← GRUPOS</button>
-    <button id="viewStandingsBtn" class="back-btn secondary-btn">CLASIFICACIÓN</button>
-  </div>
-
-  <h2 id="groupDetailTitle">GRUPO A</h2>
-</div>
-
-    <div id="groupTeamsHeader" class="group-teams-header"></div>
-
-    <div class="matches-table-header">
-  <div>HORA</div>
-  <div>ESTADIO</div>
-  <div>LOCAL</div>
-  <div>L</div>
-  <div>V</div>
-  <div>VISITANTE</div>
-</div>
-
-      <div id="matchesTableBody" class="matches-table-body"></div>
-<div id="standingsSection" class="standings-wrap">
- <div class="back-to-top-wrap">
-  <button id="backToTopBtn" class="back-to-top-btn">↑ VOLVER ARRIBA</button>
-</div>
-
-<div class="standings-head">
-  <h3>CLASIFICACIÓN DEL GRUPO</h3>
-</div>
-
-  <div class="standings-table-wrap">
-  <div class="standings-table-header">
-    <div>POS</div>
-    <div>EQUIPO</div>
-    <div>PJ</div>
-    <div>G</div>
-    <div>E</div>
-    <div>P</div>
-    <div>GF</div>
-    <div>GC</div>
-    <div>DG</div>
-    <div>PTS</div>
-  </div>
-
-  <div id="standingsTable"></div>
-<div class="next-round-wrap">
-  <button id="nextRoundBtn" class="next-round-btn">
-    Siguiente Ronda
-  </button>
-</div>
-</div>
-</div>
+  <div class="group-detail-top">
+    <div class="group-top-actions">
+      <button id="backToGroupsBtn" class="back-btn">← GRUPOS</button>
+      <button id="viewStandingsBtn" class="back-btn secondary-btn">CLASIFICACIÓN</button>
     </div>
-  </section>
-</div>
+
+    <h2 id="groupDetailTitle">GRUPO A</h2>
+  </div>
+
+  <div id="groupTeamsHeader" class="group-teams-header"></div>
+
+  <div class="matches-table-header">
+    <div>HORA</div>
+    <div>ESTADIO</div>
+    <div>LOCAL</div>
+    <div>L</div>
+    <div>V</div>
+    <div>VISITANTE</div>
+  </div>
+
+  <div id="matchesTableBody" class="matches-table-body"></div>
+
+  <div id="standingsSection" class="standings-wrap">
+    <div class="back-to-top-wrap">
+      <button id="backToTopBtn" class="back-to-top-btn">↑ VOLVER ARRIBA</button>
+    </div>
+
+    <div class="standings-head">
+      <h3>CLASIFICACIÓN DEL GRUPO</h3>
+    </div>
+
+    <div class="standings-table-wrap">
+      <div class="standings-table-header">
+        <div>POS</div>
+        <div>EQUIPO</div>
+        <div>PJ</div>
+        <div>G</div>
+        <div>E</div>
+        <div>P</div>
+        <div>GF</div>
+        <div>GC</div>
+        <div>DG</div>
+        <div>PTS</div>
+      </div>
+
+      <div id="standingsTable"></div>
+
+      <div class="next-round-wrap">
+        <button id="nextRoundBtn" class="next-round-btn">
+          Siguiente Ronda
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="knockoutScreen" class="knockout-screen hidden">
+  <div class="group-detail-top">
+    <div class="group-top-actions">
+      <button id="backToGroupsFromKnockoutBtn" class="back-btn">← GRUPOS</button>
+    </div>
+    <h2>FASE FINAL</h2>
+  </div>
+
+  <div id="knockoutRounds"></div>
+</section>
 
 <audio id="goalSound" src="goal-sound.mp3"></audio>
 <script src="app.js"></script>
