@@ -1795,33 +1795,32 @@ function renderKnockoutCard(match) {
     : (resolveKnockoutRef(match.awayRef) || match.awayRef);
   const stored = getKnockoutStoredResult(match.code) || {};
 
-  return `
-    <div class="knockout-card">
-      <div class="knockout-meta">${match.code} · ${match.date} · ${match.time}</div>
-<div class="knockout-team">${homeTeam}</div>
-
-<div class="knockout-vs">vs</div>
-
-${
-  isThirdCombo
+  const awayBlock = isThirdCombo
     ? `
       <select class="third-place-picker" data-match-code="${match.code}" data-away-ref="${match.awayRef}">
         <option value="">Elegir mejor 3ro</option>
       </select>
     `
-    : `<div class="knockout-team">${awayTeam}</div>`
-}
+    : `<div class="knockout-team">${awayTeam}</div>`;
 
-<div class="knockout-score-row">
-  <input type="number" min="0" class="knockout-goal-input" data-match="${match.code}" data-side="home" placeholder="0" value="${stored.homeGoals ?? ""}">
-  <span class="knockout-score-sep">-</span>
-  <input type="number" min="0" class="knockout-goal-input" data-match="${match.code}" data-side="away" placeholder="0" value="${stored.awayGoals ?? ""}">
-</div>
+  return `
+    <div class="knockout-card">
+      <div class="knockout-meta">${match.code} · ${match.date} · ${match.time}</div>
 
+      <div class="knockout-team-row">
+        <div class="knockout-team">${homeTeam}</div>
+        <input type="number" min="0" class="knockout-goal-input" data-match="${match.code}" data-side="home" placeholder="0" value="${stored.homeGoals ?? ""}">
+      </div>
+
+      <div class="knockout-vs">vs</div>
+
+      <div class="knockout-team-row">
+        ${awayBlock}
+        <input type="number" min="0" class="knockout-goal-input" data-match="${match.code}" data-side="away" placeholder="0" value="${stored.awayGoals ?? ""}">
+      </div>
     </div>
   `;
 }
-
 function renderSimpleRound(title, matches) {
   return `
     <div class="knockout-round-block">
@@ -1909,28 +1908,53 @@ knockoutRounds.innerHTML = `
   </div>
 `;    
 
+const savedThird = JSON.parse(localStorage.getItem('thirdPlaceSelections') || '{}');
+
+
+document.querySelectorAll('.third-place-picker').forEach(select => {
+  const matchCode = select.dataset.matchCode;
+  console.log('restaurando', matchCode, 'valor guardado:', savedThird[matchCode], 'opciones:', select.innerHTML);
+
+  if (savedThird[matchCode]) {
+    select.value = savedThird[matchCode];
+    console.log('valor final del select:', select.value);
+  }
+});
+
+
 const bestThirds = getBestThirdPlacedTeams();
 const thirdSelections = {};
 
 function refreshThirdPickers() {
-  const usedGroups = Object.values(thirdSelections).filter(Boolean);
+  const savedThird = JSON.parse(localStorage.getItem('thirdPlaceSelections') || '{}');
 
   document.querySelectorAll(".third-place-picker").forEach(select => {
-    const currentValue = thirdSelections[select.dataset.matchCode] || "";
+    const matchCode = select.dataset.matchCode;
+    const currentValue = thirdSelections[matchCode] || savedThird[matchCode] || "";
+
     select.innerHTML = `<option value="">Elegir mejor 3ro</option>`;
+
+    const usedGroups = Object.entries(thirdSelections)
+      .filter(([code, value]) => code !== matchCode && value)
+      .map(([code, value]) => value);
 
     bestThirds.forEach(team => {
       const option = document.createElement("option");
       option.value = team.group;
       option.textContent = `3${team.group} - ${team.team}`;
 
-      const takenByOther = usedGroups.includes(team.group) && currentValue !== team.group;
-      if (takenByOther) option.disabled = true;
+      if (usedGroups.includes(team.group)) {
+        option.disabled = true;
+      }
 
-      if (currentValue === team.group) option.selected = true;
+      if (currentValue === team.group) {
+        option.selected = true;
+      }
 
       select.appendChild(option);
     });
+
+    thirdSelections[matchCode] = currentValue;
   });
 }
 
@@ -1941,6 +1965,12 @@ bindKnockoutScoreInputs();
 document.querySelectorAll(".third-place-picker").forEach(select => {
   select.addEventListener("change", () => {
     thirdSelections[select.dataset.matchCode] = select.value || "";
+
+    localStorage.setItem(
+      "thirdPlaceSelections",
+      JSON.stringify(thirdSelections)
+    );
+
     refreshThirdPickers();
   });
 });
@@ -2006,6 +2036,28 @@ if (backToGroupsFromKnockoutBtn) {
 }
 
 
+});
+
+document.addEventListener('change', (e) => {
+  if (!e.target.classList.contains('third-place-picker')) return;
+
+  const selectedValue = e.target.value;
+  const currentMatch = e.target.dataset.matchCode;
+
+  // 🔥 eliminar ese mismo valor de otros selects
+  document.querySelectorAll('.third-place-picker').forEach(select => {
+    if (select.dataset.matchCode !== currentMatch && select.value === selectedValue) {
+      select.value = "";
+    }
+  });
+
+  // guardar normalmente
+  const saved = {};
+  document.querySelectorAll('.third-place-picker').forEach(s => {
+    saved[s.dataset.matchCode] = s.value;
+  });
+
+  localStorage.setItem('thirdPlaceSelections', JSON.stringify(saved));
 });
 
 if ("serviceWorker" in navigator) {
