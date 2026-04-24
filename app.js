@@ -1447,8 +1447,8 @@ function getKnockoutWinner(code) {
   const sourceMatch = getKnockoutSourceMatch(code);
   if (!sourceMatch) return null;
 
-  const homeTeam = resolveKnockoutRef(sourceMatch.homeRef);
-  const awayTeam = resolveKnockoutRef(sourceMatch.awayRef);
+const homeTeam = resolveKnockoutSide(code, sourceMatch.homeRef);
+const awayTeam = resolveKnockoutSide(code, sourceMatch.awayRef);
 
   if (!homeTeam || !awayTeam) return null;
   if (result.homeGoals === "" || result.awayGoals === "") return null;
@@ -1456,9 +1456,11 @@ function getKnockoutWinner(code) {
   const hg = Number(result.homeGoals);
   const ag = Number(result.awayGoals);
 
-  if (hg > ag) return homeTeam;
-  if (ag > hg) return awayTeam;
+if (hg > ag) return homeTeam;
+if (ag > hg) return awayTeam;
 
+// empate → usar ganador manual (penales)
+return result.winner || null;
   return result.winner || null;
 }
 function getKnockoutLoser(code) {
@@ -1485,25 +1487,92 @@ function getKnockoutLoser(code) {
 }
 
 function resolveKnockoutRef(ref) {
+  if (!ref) return null;
+
+  // 1A, 2B, etc.
   if (/^[12][A-L]$/.test(ref)) {
-    return getGroupPositionTeam(ref);
+    return getGroupPositionTeam(ref) || ref;
   }
 
- if (/^3[A-L]+$/.test(ref)) {
-  return getThirdTeamBySlot(ref);
-}
+  // 3ABCDF, 3CDFGH, etc.
+  if (/^3[A-L]{2,}$/.test(ref)) {
+    return getThirdPlaceTeam(ref) || ref;
+  }
 
+  // 3A, 3B, 3C directo
+  if (/^3[A-L]$/.test(ref)) {
+    const group = ref[1];
+    const standings = calculateStandings(group);
+    return standings[2]?.team || ref;
+  }
+
+  // W74, W77, etc.
   if (/^W\d+$/.test(ref)) {
-    return getKnockoutWinner("P" + ref.slice(1));
+    const matchCode = "P" + ref.slice(1);
+    return getKnockoutWinner(matchCode) || ref;
   }
 
+  // RU101, RU102, etc.
   if (/^RU\d+$/.test(ref)) {
-    return getKnockoutLoser("P" + ref.slice(2));
+    const matchCode = "P" + ref.slice(2);
+    return getKnockoutLoser(matchCode) || ref;
   }
 
-  return null;
+  return ref;
 }
 
+function resolveKnockoutSide(matchCode, ref) {
+  if (/^3[A-L]{2,}$/.test(ref)) {
+    const savedThird = JSON.parse(localStorage.getItem("thirdPlaceSelections") || "{}");
+    const group = savedThird[matchCode];
+
+    if (!group) return ref;
+
+    const standings = calculateStandings(group);
+    return standings[2]?.team || ref;
+  }
+
+  return resolveKnockoutRef(ref);
+}
+
+function getTeamByGroupPosition(ref) {
+  return getGroupPositionTeam(ref);
+}
+
+function updateWinnerButton() {
+  const btn = document.getElementById("winnerBtn");
+  if (!btn) return;
+
+  const final = getKnockoutStoredResult("P104");
+
+  if (!final) {
+    btn.disabled = true;
+    btn.classList.remove("active");
+    return;
+  }
+
+  const hg = final.homeGoals;
+  const ag = final.awayGoals;
+
+  // validar números reales
+  const hasScores =
+    hg !== "" &&
+    ag !== "" &&
+    hg !== null &&
+    ag !== null &&
+    !isNaN(Number(hg)) &&
+    !isNaN(Number(ag));
+
+  // empate necesita ganador
+  const isDraw = Number(hg) === Number(ag);
+
+  const isValid =
+    hasScores &&
+    (!isDraw || final.winner);
+
+  btn.disabled = !isValid;
+  btn.classList.toggle("active", isValid);
+}
 function saveKnockoutResult(code, homeGoals, awayGoals, winner = null, penalties = null) {
   const saved = JSON.parse(localStorage.getItem("worldcup_knockout") || "{}");
 
@@ -1515,9 +1584,19 @@ function saveKnockoutResult(code, homeGoals, awayGoals, winner = null, penalties
   };
 
   localStorage.setItem("worldcup_knockout", JSON.stringify(saved));
+updateWinnerButton();
 }
 
+function getMatchByCode(code) {
+  const rounds = Object.values(knockoutTemplate);
 
+  for (const round of rounds) {
+    const found = round.find(m => m.code === code);
+    if (found) return found;
+  }
+
+  return null;
+}
 function bindKnockoutScoreInputs() {
   document.querySelectorAll(".knockout-goal-input").forEach(input => {
     input.addEventListener("input", (e) => {
@@ -1545,8 +1624,8 @@ function bindKnockoutScoreInputs() {
 
       if (current.homeGoals !== "" && current.awayGoals !== "") {
         const sourceMatch = getKnockoutSourceMatch(matchCode);
-        const homeTeam = resolveKnockoutRef(sourceMatch.homeRef);
-        const awayTeam = resolveKnockoutRef(sourceMatch.awayRef);
+      const homeTeam = resolveKnockoutSide(matchCode, sourceMatch.homeRef);
+const awayTeam = resolveKnockoutSide(matchCode, sourceMatch.awayRef);
 
         const hg = Number(current.homeGoals);
         const ag = Number(current.awayGoals);
@@ -1568,6 +1647,27 @@ function bindKnockoutScoreInputs() {
   });
 }
 
+function bindPenaltyPickers() {
+  document.querySelectorAll(".penalty-picker").forEach(select => {
+    select.addEventListener("change", () => {
+      const matchCode = select.dataset.match;
+      const winner = select.value;
+
+      const current = getKnockoutStoredResult(matchCode) || {};
+
+      saveKnockoutResult(
+        matchCode,
+        current.homeGoals,
+        current.awayGoals,
+        winner,
+        true
+      );
+
+      nextBtn.click();
+    });
+  });
+}
+
 function getResolvedKnockoutMatch(match) {
   const saved = getKnockoutStoredResult(match.code) || {};
 
@@ -1581,10 +1681,6 @@ function getResolvedKnockoutMatch(match) {
     penalties: saved.penalties ?? null
   };
 }
-
-
-
-
 
 
 
@@ -1795,6 +1891,21 @@ function renderKnockoutCard(match) {
     : (resolveKnockoutRef(match.awayRef) || match.awayRef);
   const stored = getKnockoutStoredResult(match.code) || {};
 
+const isDraw = stored.homeGoals !== "" && stored.awayGoals !== "" && Number(stored.homeGoals) === Number(stored.awayGoals);
+
+const penaltyUI = isDraw ? `
+  <div class="penalty-box">
+    <span class="penalty-label">(P)</span>
+
+    <div class="penalty-col">
+      <input type="number" min="0" class="penalty-input" data-match="${match.code}" data-side="home" placeholder="0" value="${stored.penalties?.home ?? ""}">
+      
+      <span class="penalty-vs">vs</span>
+      
+      <input type="number" min="0" class="penalty-input" data-match="${match.code}" data-side="away" placeholder="0" value="${stored.penalties?.away ?? ""}">
+    </div>
+  </div>
+` : "";
   const awayBlock = isThirdCombo
     ? `
       <select class="third-place-picker" data-match-code="${match.code}" data-away-ref="${match.awayRef}">
@@ -1804,23 +1915,68 @@ function renderKnockoutCard(match) {
     : `<div class="knockout-team">${awayTeam}</div>`;
 
   return `
-    <div class="knockout-card">
+  <div class="knockout-card" data-code="${match.code}">
       <div class="knockout-meta">${match.code} · ${match.date} · ${match.time}</div>
 
       <div class="knockout-team-row">
         <div class="knockout-team">${homeTeam}</div>
         <input type="number" min="0" class="knockout-goal-input" data-match="${match.code}" data-side="home" placeholder="0" value="${stored.homeGoals ?? ""}">
+${penaltyUI}
       </div>
 
-      <div class="knockout-vs">vs</div>
+      ${isDraw ? '' : '<div class="knockout-vs">vs</div>'}
 
       <div class="knockout-team-row">
         ${awayBlock}
         <input type="number" min="0" class="knockout-goal-input" data-match="${match.code}" data-side="away" placeholder="0" value="${stored.awayGoals ?? ""}">
       </div>
+
     </div>
   `;
 }
+
+function bindPenaltyInputs() {
+  document.querySelectorAll(".penalty-input").forEach(input => {
+    input.addEventListener("input", (e) => {
+      const matchCode = e.target.dataset.match;
+      const side = e.target.dataset.side;
+
+      let value = parseInt(e.target.value, 10);
+      if (isNaN(value) || value < 0) value = 0;
+
+      const current = getKnockoutStoredResult(matchCode) || {};
+
+      const penalties = current.penalties || { home: "", away: "" };
+
+      penalties[side] = value;
+
+      let winner = current.winner;
+
+      if (penalties.home !== "" && penalties.away !== "") {
+        const sourceMatch = getKnockoutSourceMatch(matchCode);
+
+        const homeTeam = resolveKnockoutSide(matchCode, sourceMatch.homeRef);
+        const awayTeam = resolveKnockoutSide(matchCode, sourceMatch.awayRef);
+
+        if (penalties.home > penalties.away) winner = homeTeam;
+        else if (penalties.away > penalties.home) winner = awayTeam;
+      }
+
+      saveKnockoutResult(
+        matchCode,
+        current.homeGoals,
+        current.awayGoals,
+        winner,
+        penalties
+      );
+
+      nextBtn.click();
+    });
+  });
+}
+
+
+
 function renderSimpleRound(title, matches) {
   return `
     <div class="knockout-round-block">
@@ -1888,6 +2044,15 @@ knockoutRounds.innerHTML = `
     <div class="knockout-col">
       ${renderSimpleRound("Final", finalMatch)}
       ${renderSimpleRound("3er puesto", thirdPlaceMatch)}
+
+      <div class="winner-zone">
+       <button id="winnerBtn" class="winner-btn" disabled>World Cup Winner</button>
+      <div id="winnerReveal" class="winner-hidden">
+  <div class="winner-trophy">🏆</div>
+  <img id="winnerFlag" src="">
+  <div id="winnerName"></div>
+</div>
+      </div>
     </div>
 
     <div class="knockout-col">
@@ -1906,61 +2071,47 @@ knockoutRounds.innerHTML = `
       ${renderSimpleRound("Dieciseisavos", rightMatches)}
     </div>
   </div>
-`;    
+`;
+updateWinnerButton();
 
-const savedThird = JSON.parse(localStorage.getItem('thirdPlaceSelections') || '{}');
+const winnerBtn = document.getElementById("winnerBtn");
 
+if (winnerBtn) {
+  winnerBtn.onclick = () => {
+    const final = JSON.parse(localStorage.getItem("worldcup_knockout") || "{}").P104;
+    if (!final) return;
 
-document.querySelectorAll('.third-place-picker').forEach(select => {
-  const matchCode = select.dataset.matchCode;
-  console.log('restaurando', matchCode, 'valor guardado:', savedThird[matchCode], 'opciones:', select.innerHTML);
+    let winner = null;
 
-  if (savedThird[matchCode]) {
-    select.value = savedThird[matchCode];
-    console.log('valor final del select:', select.value);
-  }
-});
+    const teams = document.querySelectorAll('[data-code="P104"] .knockout-team');
 
+    if (Number(final.homeGoals) > Number(final.awayGoals)) {
+      winner = teams[0]?.textContent.trim();
+    } else if (Number(final.awayGoals) > Number(final.homeGoals)) {
+      winner = teams[1]?.textContent.trim();
+    } else {
+      winner = final.winner;
+    }
 
-const bestThirds = getBestThirdPlacedTeams();
-const thirdSelections = {};
+    if (!winner) return;
 
-function refreshThirdPickers() {
-  const savedThird = JSON.parse(localStorage.getItem('thirdPlaceSelections') || '{}');
+    const team = getTeamData(winner);
+    if (!team) return;
 
-  document.querySelectorAll(".third-place-picker").forEach(select => {
-    const matchCode = select.dataset.matchCode;
-    const currentValue = thirdSelections[matchCode] || savedThird[matchCode] || "";
-
-    select.innerHTML = `<option value="">Elegir mejor 3ro</option>`;
-
-    const usedGroups = Object.entries(thirdSelections)
-      .filter(([code, value]) => code !== matchCode && value)
-      .map(([code, value]) => value);
-
-    bestThirds.forEach(team => {
-      const option = document.createElement("option");
-      option.value = team.group;
-      option.textContent = `3${team.group} - ${team.team}`;
-
-      if (usedGroups.includes(team.group)) {
-        option.disabled = true;
-      }
-
-      if (currentValue === team.group) {
-        option.selected = true;
-      }
-
-      select.appendChild(option);
-    });
-
-    thirdSelections[matchCode] = currentValue;
-  });
+    document.getElementById("winnerName").textContent = winner;
+    document.getElementById("winnerFlag").src = flagUrl(team.code).replace("/w80/", "/w160/");
+    document.getElementById("winnerFlag").alt = winner;
+    document.getElementById("winnerReveal").classList.add("show");
+  };
 }
 
-refreshThirdPickers();
-bindKnockoutScoreInputs();
 
+
+bindKnockoutScoreInputs();
+bindPenaltyInputs();
+bindPenaltyPickers();
+updateWinnerButton();
+console.log("FINAL P104:", getKnockoutStoredResult("P104"));
 
 document.querySelectorAll(".third-place-picker").forEach(select => {
   select.addEventListener("change", () => {
@@ -2051,6 +2202,42 @@ document.addEventListener('change', (e) => {
     }
   });
 
+
+
+  const hg = final.homeGoals;
+  const ag = final.awayGoals;
+
+ 
+
+function getFinalWinner() {
+  const final = getKnockoutStoredResult("P104");
+  if (!final) return null;
+
+  const match = getMatchByCode("P104");
+  const home = resolveKnockoutRef(match.homeRef);
+  const away = resolveKnockoutRef(match.awayRef);
+
+  if (Number(final.homeGoals) > Number(final.awayGoals)) return home;
+  if (Number(final.awayGoals) > Number(final.homeGoals)) return away;
+
+  return final.winner || null;
+}
+
+
+  const winner = getFinalWinner();
+  if (!winner) return;
+
+  const team = getTeamData(winner);
+  const reveal = document.getElementById("winnerReveal");
+  const flag = document.getElementById("winnerFlag");
+  const name = document.getElementById("winnerName");
+
+  flag.src = flagUrl(team.code);
+  flag.alt = winner;
+  name.textContent = winner;
+
+  reveal.classList.add("show");
+});
   // guardar normalmente
   const saved = {};
   document.querySelectorAll('.third-place-picker').forEach(s => {
@@ -2058,7 +2245,24 @@ document.addEventListener('change', (e) => {
   });
 
   localStorage.setItem('thirdPlaceSelections', JSON.stringify(saved));
-});
+
+
+function getFinalWinner() {
+  const final = getKnockoutStoredResult("P104");
+  if (!final) return null;
+
+  const match = getMatchByCode("P104");
+  if (!match) return null;
+
+  const home = resolveKnockoutRef(match.homeRef);
+  const away = resolveKnockoutRef(match.awayRef);
+
+  if (Number(final.homeGoals) > Number(final.awayGoals)) return home;
+  if (Number(final.awayGoals) > Number(final.homeGoals)) return away;
+
+  return final.winner || null;
+}
+
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

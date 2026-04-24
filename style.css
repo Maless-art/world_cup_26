@@ -1149,3 +1149,157 @@ align:top
   font-size: 0.75rem;
   opacity: 0.7;
 }
+
+.penalty-box {
+  margin-top: 6px;
+}
+
+.penalty-label {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.penalty-col {
+  display: flex;
+  flex-direction: column; /* 🔥 clave */
+  align-items: center;
+  gap: 4px;
+}
+
+.penalty-input {
+  width: 42px;
+  height: 28px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+.penalty-vs {
+  font-size: 12px;
+  opacity: 0.6;
+}
+.penalty-box {
+  padding: 1px;
+margin-left: 56px;
+text-align: center;
+}
+
+.winner-zone {
+  margin-top: 34px;
+  text-align: center;
+}
+
+#winnerBtn {
+  width: 100%;
+  max-width: 260px;
+  padding: 16px 22px;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+#winnerBtn.active:not(:disabled) {
+  background: #d91f26;
+  cursor: pointer;
+}
+
+#winnerReveal {
+  margin-top: 20px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+#winnerReveal.show {
+  opacity: 1;
+}
+
+#winnerFlag {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+#winnerName {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+
+.winner-btn:disabled {
+  background: #555 !important;
+  color: rgba(255,255,255,0.45) !important;
+  cursor: not-allowed !important;
+  opacity: 0.55 !important;
+}
+
+.winner-btn.active:not(:disabled) {
+  background: #e31b23 !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+}
+
+#winnerReveal {
+  margin-top: 24px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  text-align: center;
+}
+
+#winnerReveal.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.winner-trophy {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+#winnerFlag {
+  width: 110px;
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.35);
+  margin-bottom: 12px;
+}
+
+#winnerName {
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+#winnerReveal {
+  margin-top: 24px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  text-align: center;
+}
+
+#winnerReveal.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.winner-trophy {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+#winnerFlag {
+  width: 110px;
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.35);
+  margin-bottom: 12px;
+}
+
+#winnerName {
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
