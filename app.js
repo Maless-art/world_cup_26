@@ -2224,65 +2224,7 @@ document.addEventListener("change", (e) => {
 
 
 
-  const hg = final.homeGoals;
-  const ag = final.awayGoals;
-
- 
-
-function getFinalWinner() {
-  const final = getKnockoutStoredResult("P104");
-  if (!final) return null;
-
-  const match = getMatchByCode("P104");
-  const home = resolveKnockoutRef(match.homeRef);
-  const away = resolveKnockoutRef(match.awayRef);
-
-  if (Number(final.homeGoals) > Number(final.awayGoals)) return home;
-  if (Number(final.awayGoals) > Number(final.homeGoals)) return away;
-
-  return final.winner || null;
-}
-
-
-  const winner = getFinalWinner();
-
-
-  const team = getTeamData(winner);
-  const reveal = document.getElementById("winnerReveal");
-  const flag = document.getElementById("winnerFlag");
-  const name = document.getElementById("winnerName");
-
-  flag.src = flagUrl(team.code);
-  flag.alt = winner;
-  name.textContent = winner;
-
-  reveal.classList.add("show");
-});
-  // guardar normalmente
-  const saved = {};
-  document.querySelectorAll('.third-place-picker').forEach(s => {
-    saved[s.dataset.matchCode] = s.value;
-  });
-
-  localStorage.setItem('thirdPlaceSelections', JSON.stringify(saved));
-
-
-function getFinalWinner() {
-  const final = getKnockoutStoredResult("P104");
-  if (!final) return null;
-
-  const match = getMatchByCode("P104");
-  if (!match) return null;
-
-  const home = resolveKnockoutRef(match.homeRef);
-  const away = resolveKnockoutRef(match.awayRef);
-
-  if (Number(final.homeGoals) > Number(final.awayGoals)) return home;
-  if (Number(final.awayGoals) > Number(final.homeGoals)) return away;
-
-
-}
-
+  
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
