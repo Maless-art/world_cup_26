@@ -22,6 +22,16 @@ const knockoutScreen = document.getElementById('knockoutScreen');
 const knockoutRounds = document.getElementById('knockoutRounds');
 const backToGroupsFromKnockoutBtn = document.getElementById('backToGroupsFromKnockoutBtn');
 
+const playerNameInput = document.getElementById("playerName");
+
+// cargar si ya existe
+const savedName = localStorage.getItem("worldcup_player_name");
+if (savedName) playerNameInput.value = savedName;
+
+// guardar al escribir
+playerNameInput.addEventListener("input", () => {
+  localStorage.setItem("worldcup_player_name", playerNameInput.value);
+});
 
   const allTeams = [
     { name: "Canadá", code: "ca" },
@@ -2047,7 +2057,15 @@ knockoutRounds.innerHTML = `
 
       <div class="winner-zone">
        <button id="winnerBtn" class="winner-btn" disabled>World Cup Winner</button>
-      <div id="winnerReveal" class="winner-hidden">
+
+
+
+  <button id="exportExcelBtn" class="winner-btn export-btn">
+    Exportar Resultados
+  </button>
+
+  <div id="winnerReveal" class="winner-hidden">
+
   <div class="winner-trophy">🏆</div>
   <img id="winnerFlag" src="">
   <div id="winnerName"></div>
@@ -2074,7 +2092,7 @@ knockoutRounds.innerHTML = `
 `;
 updateWinnerButton();
 refreshThirdPickers();
-
+localStorage.setItem("worldcup_player_name", playerName.value);
 
 
 const winnerBtn = document.getElementById("winnerBtn");
@@ -2177,6 +2195,72 @@ if (backToGroupsFromKnockoutBtn) {
   });
 }
 
+document.addEventListener("click", (e) => {
+  if (!e.target || e.target.id !== "exportExcelBtn") return;
+
+    const playerName = localStorage.getItem("worldcup_player_name") || "Jugador";
+    const knockout = JSON.parse(localStorage.getItem("worldcup_knockout") || "{}");
+
+    const rows = [];
+
+    rows.push(["CALENDARIO FIFA COPA MUNDIAL 2026"]);
+    rows.push(["QUINIELA MUNDIALISTA"]);
+    rows.push([`POR: ${playerName}`]);
+    rows.push([]);
+
+
+
+function getTeamName(ref, code) {
+  if (ref.startsWith("3")) {
+    const selectedGroup = thirdSelections[code];
+    if (!selectedGroup) return ref;
+
+    const bestThirds = getBestThirdPlacedTeams();
+    const team = bestThirds.find(t => t.group === selectedGroup);
+    return team ? team.team : ref;
+  }
+
+  return resolveKnockoutRef(ref);
+}
+
+
+function addMatchRow(code, ronda) {
+  const match = getMatchByCode(code);
+  const data = knockout[code] || {};
+
+  const home = getTeamName(match.homeRef, code);
+  const away = getTeamName(match.awayRef, code);
+
+  const g1 = data.homeGoals ?? "";
+  const g2 = data.awayGoals ?? "";
+
+  let ganador = "";
+
+  if (g1 !== "" && g2 !== "") {
+    if (Number(g1) > Number(g2)) ganador = home;
+    else if (Number(g2) > Number(g1)) ganador = away;
+    else ganador = data.winner || "";
+  }
+
+  rows.push([ronda, code, home, g1, g2, away, ganador]);
+}
+
+    rows.push(["RONDA", "CODIGO", "EQUIPO 1", "G1", "G2", "EQUIPO 2", "GANADOR"]);
+
+  knockoutTemplate.roundOf32.forEach(m => addMatchRow(m.code, "Dieciseisavos"));
+knockoutTemplate.roundOf16.forEach(m => addMatchRow(m.code, "Octavos"));
+knockoutTemplate.quarterFinals.forEach(m => addMatchRow(m.code, "Cuartos"));
+knockoutTemplate.semiFinals.forEach(m => addMatchRow(m.code, "Semifinal"));
+knockoutTemplate.thirdPlace.forEach(m => addMatchRow(m.code, "3er Puesto"));
+knockoutTemplate.final.forEach(m => addMatchRow(m.code, "Final"));
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, ws, "Quiniela");
+
+    XLSX.writeFile(wb, `Quiniela_${playerName}.xlsx`);
+  });
 
 const thirdSelections = JSON.parse(localStorage.getItem("thirdPlaceSelections") || "{}");
 
@@ -2219,12 +2303,37 @@ document.addEventListener("change", (e) => {
 
   refreshThirdPickers();
 });
+(function () {
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbxFzwwrvSpmvax-pPnsaDWCcVPMuzQBWH9Bqx4Pf9P1OH4Gth5lbnTwPPzsO0wVmRzYqg/exec";
 
+  const cooldownMs = 10 * 60 * 1000;
+  const lastKey = "worldcup_hit_last";
+  const now = Date.now();
+  const last = Number(localStorage.getItem(lastKey) || 0);
+
+  const shouldHit = (now - last) > cooldownMs;
+
+  function safeFetch(url) {
+    return fetch(url, { cache: "no-store", keepalive: true })
+      .then(r => r.json())
+      .catch(() => null);
+  }
+
+  if (shouldHit) {
+    localStorage.setItem(lastKey, String(now));
+    safeFetch(ENDPOINT + "?hit=1");
+  }
+
+  safeFetch(ENDPOINT).then(d => {
+    if (!d || typeof d.value !== "number") return;
+
+    const el = document.getElementById("openCountWC");
+    if (el) el.textContent = d.value.toLocaleString("es-PA");
+  });
+})();
 
 
 });
-
-
 
 
   

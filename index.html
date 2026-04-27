@@ -14,8 +14,9 @@
 
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-
-</head>
+<div class="version-meta">
+<span id="openCountWC">—</span> Visits:
+</div></head>
 <body>
 
 <!-- 🟡 PORTADA -->
@@ -29,7 +30,7 @@
 <div class="footer-credit">
   <p class="designed-by">Diseñado y desarrollado por Franklin Black</p>
   <p class="year">2026</p>
-  <p class"version">v1.0</p>
+  <p class"version">v1.0.1</p>
 </div>
 
   <div class="host-logos">
@@ -56,13 +57,19 @@
 <!-- 🔵 CONTENIDO -->
 <div id="app" class="app hidden">
   <section id="favoritesScreen" class="favorites-screen">
-    <h2>¿Cuáles son tus 3 equipos favoritos?</h2>
-    <p class="favorites-subtitle">Elige hasta 3 selecciones para personalizar tu experiencia</p>
 
-    <div id="teamsGrid" class="teams-grid"></div>
+  <div class="player-box">
+    <input id="playerName" type="text" placeholder="Tu nombre">
+  </div>
 
-    <button id="continueBtn" class="continue-btn" disabled>CONTINUAR</button>
-  </section>
+  <h2>¿Cuáles son tus 3 equipos favoritos?</h2>
+  <p class="favorites-subtitle">Elige hasta 3 selecciones para personalizar tu experiencia</p>
+
+  <div id="teamsGrid" class="teams-grid"></div>
+
+  <button id="continueBtn" class="continue-btn" disabled>CONTINUAR</button>
+
+</section>
 
   <section id="groupsScreen" class="groups-screen hidden">
     <div class="groups-header">
@@ -143,6 +150,7 @@
 </section>
 
 <audio id="goalSound" src="goal-sound.mp3"></audio>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script src="./app.js?v=20260427-1"></script>
 </body>
 </html>
