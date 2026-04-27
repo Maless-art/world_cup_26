@@ -2303,35 +2303,28 @@ document.addEventListener("change", (e) => {
   refreshThirdPickers();
 });
 (function () {
-  const ENDPOINT = "https://script.google.com/macros/s/AKfycbxFzwwrvSpmvax-pPnsaDWCcVPMuzQBWH9Bqx4Pf9P1OH4Gth5lbnTwPPzsO0wVmRzYqg/exec";
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbzPVHcp-aajTdHWYyGYm2lcd6U8a7WFPvB3WDUyerswtJnh2SOmQZ1I56GOUnGG29olgg/exec";
 
   const cooldownMs = 10 * 60 * 1000;
   const lastKey = "worldcup_hit_last";
   const now = Date.now();
   const last = Number(localStorage.getItem(lastKey) || 0);
 
-  const shouldHit = (now - last) > cooldownMs;
-
-  function safeFetch(url) {
-    return fetch(url, { cache: "no-store", keepalive: true })
-      .then(r => r.json())
-      .catch(() => null);
-  }
-
-  if (shouldHit) {
+  if ((now - last) > cooldownMs) {
     localStorage.setItem(lastKey, String(now));
-    safeFetch(ENDPOINT + "?hit=1");
+    new Image().src = ENDPOINT + "?hit=1&t=" + Date.now();
   }
 
-  safeFetch(ENDPOINT).then(d => {
+  window.setWorldCupCount = function (d) {
     if (!d || typeof d.value !== "number") return;
-
     const el = document.getElementById("openCountWC");
     if (el) el.textContent = d.value.toLocaleString("es-PA");
-  });
+  };
+
+  const script = document.createElement("script");
+  script.src = ENDPOINT + "?callback=setWorldCupCount&t=" + Date.now();
+  document.body.appendChild(script);
 })();
-
-
 });
 
 
