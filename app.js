@@ -2073,6 +2073,9 @@ knockoutRounds.innerHTML = `
   </div>
 `;
 updateWinnerButton();
+refreshThirdPickers();
+
+
 
 const winnerBtn = document.getElementById("winnerBtn");
 
@@ -2113,18 +2116,6 @@ bindPenaltyPickers();
 updateWinnerButton();
 console.log("FINAL P104:", getKnockoutStoredResult("P104"));
 
-document.querySelectorAll(".third-place-picker").forEach(select => {
-  select.addEventListener("change", () => {
-    thirdSelections[select.dataset.matchCode] = select.value || "";
-
-    localStorage.setItem(
-      "thirdPlaceSelections",
-      JSON.stringify(thirdSelections)
-    );
-
-    refreshThirdPickers();
-  });
-});
 
 }
 
@@ -2189,18 +2180,47 @@ if (backToGroupsFromKnockoutBtn) {
 
 });
 
-document.addEventListener('change', (e) => {
-  if (!e.target.classList.contains('third-place-picker')) return;
+const thirdSelections = JSON.parse(localStorage.getItem("thirdPlaceSelections") || "{}");
 
-  const selectedValue = e.target.value;
-  const currentMatch = e.target.dataset.matchCode;
+function refreshThirdPickers() {
+  document.querySelectorAll(".third-place-picker").forEach(select => {
+    const matchCode = select.dataset.matchCode;
 
-  // 🔥 eliminar ese mismo valor de otros selects
-  document.querySelectorAll('.third-place-picker').forEach(select => {
-    if (select.dataset.matchCode !== currentMatch && select.value === selectedValue) {
-      select.value = "";
-    }
+    const bestThirds = getBestThirdPlacedTeams();
+
+    select.innerHTML = `<option value="">Elegir mejor 3ro</option>` +
+      bestThirds.map(t => {
+        const selected = thirdSelections[matchCode] === t.group ? "selected" : "";
+        return `<option value="${t.group}" ${selected}>${t.team} (${t.group})</option>`;
+      }).join("");
+
+    document.querySelectorAll(".third-place-picker").forEach(other => {
+      if (other === select) return;
+
+      const selectedGroup = other.value;
+      if (!selectedGroup) return;
+
+      const option = select.querySelector(`option[value="${selectedGroup}"]`);
+      if (option) option.disabled = true;
+    });
   });
+}
+
+document.addEventListener("change", (e) => {
+  if (!e.target.classList.contains("third-place-picker")) return;
+
+  const matchCode = e.target.dataset.matchCode;
+  const value = e.target.value;
+
+  thirdSelections[matchCode] = value;
+
+  localStorage.setItem(
+    "thirdPlaceSelections",
+    JSON.stringify(thirdSelections)
+  );
+
+  refreshThirdPickers();
+});
 
 
 
