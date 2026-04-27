@@ -2178,8 +2178,6 @@ if (backToGroupsFromKnockoutBtn) {
 }
 
 
-});
-
 const thirdSelections = JSON.parse(localStorage.getItem("thirdPlaceSelections") || "{}");
 
 function refreshThirdPickers() {
@@ -2221,6 +2219,11 @@ document.addEventListener("change", (e) => {
 
   refreshThirdPickers();
 });
+
+
+
+});
+
 
 
 
