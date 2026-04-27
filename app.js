@@ -2305,7 +2305,7 @@ document.addEventListener("change", (e) => {
 (function () {
   const ENDPOINT = "https://script.google.com/macros/s/AKfycbwgmT9UWVuE8gTd4DOLMZRaxNJDFMRlZr1kymCKxy9x0fiaSOasI0zC2uNUmJNi-oIwzw/exec";
 
-  const cooldownMs = 10 * 60 * 1000;
+  const cooldownMs = 5 * 60 * 1000;
   const lastKey = "worldcup_hit_last";
   const now = Date.now();
   const last = Number(localStorage.getItem(lastKey) || 0);
