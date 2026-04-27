@@ -2303,7 +2303,7 @@ document.addEventListener("change", (e) => {
   refreshThirdPickers();
 });
 (function () {
-  const ENDPOINT = "https://script.google.com/macros/s/AKfycbyaSFHtFs-IiOobltKjoAiCKydmH7853MLjT2Jxx8WYhFIlsbrJX4HknCbmeOwf0a1FHQ/exec";
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbwgmT9UWVuE8gTd4DOLMZRaxNJDFMRlZr1kymCKxy9x0fiaSOasI0zC2uNUmJNi-oIwzw/exec";
 
   const cooldownMs = 10 * 60 * 1000;
   const lastKey = "worldcup_hit_last";
