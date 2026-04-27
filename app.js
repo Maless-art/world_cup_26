@@ -2245,7 +2245,7 @@ function getFinalWinner() {
 
 
   const winner = getFinalWinner();
-  if (!winner) return;
+
 
   const team = getTeamData(winner);
   const reveal = document.getElementById("winnerReveal");
@@ -2280,7 +2280,7 @@ function getFinalWinner() {
   if (Number(final.homeGoals) > Number(final.awayGoals)) return home;
   if (Number(final.awayGoals) > Number(final.homeGoals)) return away;
 
-  return final.winner || null;
+
 }
 
 
