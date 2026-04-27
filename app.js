@@ -24,15 +24,14 @@ const backToGroupsFromKnockoutBtn = document.getElementById('backToGroupsFromKno
 
 const playerNameInput = document.getElementById("playerName");
 
-// cargar si ya existe
-const savedName = localStorage.getItem("worldcup_player_name");
-if (savedName) playerNameInput.value = savedName;
+if (playerNameInput) {
+  const savedName = localStorage.getItem("worldcup_player_name");
+  if (savedName) playerNameInput.value = savedName;
 
-// guardar al escribir
-playerNameInput.addEventListener("input", () => {
-  localStorage.setItem("worldcup_player_name", playerNameInput.value);
-});
-
+  playerNameInput.addEventListener("input", () => {
+    localStorage.setItem("worldcup_player_name", playerNameInput.value);
+  });
+}
   const allTeams = [
     { name: "Canadá", code: "ca" },
     { name: "México", code: "mx" },
@@ -2092,7 +2091,7 @@ knockoutRounds.innerHTML = `
 `;
 updateWinnerButton();
 refreshThirdPickers();
-localStorage.setItem("worldcup_player_name", playerName.value);
+localStorage.setItem("worldcup_player_name", playerNameInput.value);
 
 
 const winnerBtn = document.getElementById("winnerBtn");
