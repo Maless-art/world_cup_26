@@ -860,8 +860,8 @@ align:top
 }
 
 .host.usa{ height: 88px; }
-.host.canada{ height: 80px; }
-.host.mexico{ height: 84px; }
+.host.canada{ height: 88px; }
+.host.mexico{ height: 98px; }
 
 @keyframes floatPulse{
   0%   { transform: translateY(0) scale(1); }
@@ -1326,4 +1326,13 @@ text-align: center;
 
 .export-btn:hover {
   filter: brightness(1.1);
+}
+
+.export-btn-groups {
+  display: block;
+  margin: 0 auto 20px auto; /* centrado */
+  padding: 8px 16px;        /* más pequeño */
+  font-size: 13px;
+  border-radius: 18px;
+  max-width: 220px;         /* evita que se estire */
 }

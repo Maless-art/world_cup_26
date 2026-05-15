@@ -180,7 +180,7 @@ const thirdPlaceMap = {
 };
 
 
-  const matchesByGroup = {
+  window.matchesByGroup = {
 A: [
   {
     date: "11/06/2026",
@@ -2302,6 +2302,11 @@ document.addEventListener("change", (e) => {
 
   refreshThirdPickers();
 });
+
+
+
+
+
 (function () {
   const ENDPOINT = "https://script.google.com/macros/s/AKfycbwgmT9UWVuE8gTd4DOLMZRaxNJDFMRlZr1kymCKxy9x0fiaSOasI0zC2uNUmJNi-oIwzw/exec";
 
@@ -2326,9 +2331,46 @@ document.addEventListener("change", (e) => {
   document.body.appendChild(script);
 })();
 });
+window.exportGroupsToExcel = function () {
+  const wb = XLSX.utils.book_new();
+  const data = [];
 
+  data.push(["CALENDARIO FIFA COPA MUNDIAL 2026"]);
+  data.push(["QUINIELA MUNDIALISTA"]);
+  data.push(["RONDA DE GRUPOS"]);
+  data.push(["POR: Franklin Jovane"]);
+  data.push([]);
 
-  
+  data.push(["GRUPO", "CODIGO", "EQUIPO 1", "G1", "G2", "EQUIPO 2", "GANADOR"]);
+
+const groups = window.matchesByGroup || matchesByGroup;
+
+Object.keys(groups).forEach(group => {
+  const matches = groups[group];
+
+    data.push([`GRUPO ${group}`]);
+
+    matches.forEach((match, index) => {
+      const g1 = match.homeGoals ?? "";
+      const g2 = match.awayGoals ?? "";
+
+      let winner = "";
+      if (g1 !== "" && g2 !== "") {
+        if (Number(g1) > Number(g2)) winner = match.home;
+        else if (Number(g2) > Number(g1)) winner = match.away;
+        else winner = "Empate";
+      }
+
+      data.push(["", `P${index + 1}`, match.home, g1, g2, match.away, winner]);
+    });
+
+    data.push([]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  XLSX.utils.book_append_sheet(wb, ws, "Grupos");
+  XLSX.writeFile(wb, "Quiniela_Ronda_de_Grupos.xlsx");
+};  
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
