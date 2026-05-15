@@ -1339,6 +1339,17 @@ function debugBestThirdGroupsKey() {
   console.log("=== CLAVE DE MEJORES TERCEROS ===");
   console.log(getBestThirdGroupsKey());
 }
+function groupHasPlayedMatches(groupLetter) {
+  const matches = matchesByGroup[groupLetter] || [];
+
+  return matches.some(match =>
+    match.homeGoals !== "" &&
+    match.homeGoals !== null &&
+    match.awayGoals !== "" &&
+    match.awayGoals !== null
+  );
+}
+
 function getGroupPositionTeam(ref) {
   const m = ref.match(/^([12])([A-L])$/);
   if (!m) return null;
@@ -1346,10 +1357,13 @@ function getGroupPositionTeam(ref) {
   const position = Number(m[1]);
   const groupLetter = m[2];
 
+  if (!groupHasPlayedMatches(groupLetter)) {
+    return null;
+  }
+
   const standings = calculateStandings(groupLetter);
   return standings[position - 1]?.team || null;
 }
-
 function getBestThirdPlacedTeamsFull() {
   const thirdPlaced = [];
 
