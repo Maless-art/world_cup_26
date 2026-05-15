@@ -2382,3 +2382,17 @@ if ("serviceWorker" in navigator) {
   });
 
 }
+
+
+(function () {
+  const KEY = "worldcup_open_count";
+  const el = document.getElementById("openCountWC");
+
+  if (!el) return;
+
+  let count = Number(localStorage.getItem(KEY) || 0);
+  count += 1;
+
+  localStorage.setItem(KEY, count);
+  el.textContent = count;
+})();
