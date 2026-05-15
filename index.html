@@ -154,5 +154,16 @@
 <audio id="goalSound" src="goal-sound.mp3"></audio>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script src="./app.js?v=20260427-1"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => console.log("Service Worker registrado"))
+      .catch(error => console.error("Error registrando SW:", error));
+  });
+}
+</script>
+
 </body>
 </html>
