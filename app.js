@@ -1315,6 +1315,25 @@ function getBestThirdPlacedTeams() {
 }
 
 
+function getAllThirdPlacedTeams() {
+  const thirdPlaced = [];
+
+  Object.keys(groupsData).forEach(groupLetter => {
+    const standings = calculateStandings(groupLetter);
+
+    if (standings.length >= 3) {
+      thirdPlaced.push({
+        ...standings[2],
+        group: groupLetter
+      });
+    }
+  });
+
+  return thirdPlaced;
+}
+
+
+
 function debugBestThirds() {
   const bestThirds = getBestThirdPlacedTeams();
 
@@ -2281,7 +2300,7 @@ function refreshThirdPickers() {
   document.querySelectorAll(".third-place-picker").forEach(select => {
     const matchCode = select.dataset.matchCode;
 
-    const bestThirds = getBestThirdPlacedTeams();
+    const bestThirds = getAllThirdPlacedTeams();
 
     select.innerHTML = `<option value="">Elegir mejor 3ro</option>` +
       bestThirds.map(t => {
