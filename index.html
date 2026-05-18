@@ -20,13 +20,6 @@
 <body>
 
 
-
-<div class="global-watermark">
-  VERSIÓN DE PRUEBA / FRANKLIN BLACK
-</div>
-
-
-
 <!-- 🟡 PORTADA -->
 
 
@@ -35,10 +28,15 @@
   <div class="overlay"></div>
   <div class="light-beams"></div>
 
+<button id="audioToggle" class="audio-toggle">🔇</button>
+
+<audio id="batucadaAudio" loop>
+  <source src="batucada.mp3" type="audio/mpeg">
+</audio>
+
 <div class="footer-credit">
   <p class="designed-by">Diseñado y desarrollado por Franklin Black</p>
   <p class="year">2026</p>
-  <p class"version">v1.0.2</p>
 </div>
 
   <div class="host-logos">
@@ -49,8 +47,8 @@
   </div>
 
   <div class="cover-content">
-    <h1>CALENDARIO MUNDIAL</h1>
-    <p>Vive cada partido como si estuvieras en la cancha</p>
+    <h1>CALENDARIO INTERACTIVO</h1>
+    <p>COPA MUNDIAL DE FUTBOL 2026</p>
     <button id="enterBtn">ENTRA A LA CANCHA ⚽</button>
     <img src="fifa-logo.png" class="fifa-logo" alt="FIFA 2026">
 
@@ -84,9 +82,9 @@
       <h2>FASE DE GRUPOS</h2>
       <p>Toca un grupo para ver sus partidos</p>
     </div>
-<button class="export-btn export-btn-groups" onclick="window.exportGroupsToExcel()">
+<!-- <button class="export-btn export-btn-groups" onclick="window.exportGroupsToExcel()">
   Exportar Excel · Grupos
-</button>
+</button> -->
     <div id="groupsGrid" class="groups-grid"></div>
   </section>
 

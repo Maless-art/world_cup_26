@@ -22,6 +22,33 @@ const knockoutScreen = document.getElementById('knockoutScreen');
 const knockoutRounds = document.getElementById('knockoutRounds');
 const backToGroupsFromKnockoutBtn = document.getElementById('backToGroupsFromKnockoutBtn');
 
+const audioBtn = document.getElementById("audioToggle");
+const batucada = document.getElementById("batucadaAudio");
+
+let audioEnabled = false;
+
+audioBtn.addEventListener("click", () => {
+
+  if (!audioEnabled) {
+
+    batucada.volume = 0.35;
+    batucada.play();
+
+    audioBtn.textContent = "🔊";
+    audioEnabled = true;
+
+  } else {
+
+    batucada.pause();
+    batucada.currentTime = 0;
+
+    audioBtn.textContent = "🔇";
+    audioEnabled = false;
+  }
+});
+
+
+
 const playerNameInput = document.getElementById("playerName");
 
 if (playerNameInput) {
@@ -1904,7 +1931,8 @@ saveMatches();
         sound.currentTime = 0;
         sound.play().catch(() => {});
       }
-
+batucada.pause();
+batucada.currentTime = 0;
       cover.classList.add("fade-out");
 
       setTimeout(() => {
@@ -2092,9 +2120,9 @@ knockoutRounds.innerHTML = `
 
 
 
-  <button id="exportExcelBtn" class="winner-btn export-btn">
+  <!-- <button id="exportExcelBtn" class="winner-btn export-btn">
     Exportar Resultados
-  </button>
+  </button> -->
 
   <div id="winnerReveal" class="winner-hidden">
 
