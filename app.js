@@ -27,25 +27,21 @@ const batucada = document.getElementById("batucadaAudio");
 
 let audioEnabled = false;
 
-audioBtn.addEventListener("click", () => {
-
-  if (!audioEnabled) {
-
-    batucada.volume = 0.35;
-    batucada.play();
-
-    audioBtn.textContent = "🔊";
-    audioEnabled = true;
-
-  } else {
-
-    batucada.pause();
-    batucada.currentTime = 0;
-
-    audioBtn.textContent = "🔇";
-    audioEnabled = false;
-  }
-});
+if (audioBtn && batucada) {
+  audioBtn.addEventListener("click", () => {
+    if (!audioEnabled) {
+      batucada.volume = 0.35;
+      batucada.play().catch(() => {});
+      audioBtn.textContent = "🔊";
+      audioEnabled = true;
+    } else {
+      batucada.pause();
+      batucada.currentTime = 0;
+      audioBtn.textContent = "🔇";
+      audioEnabled = false;
+    }
+  });
+}
 
 
 
@@ -1931,8 +1927,10 @@ saveMatches();
         sound.currentTime = 0;
         sound.play().catch(() => {});
       }
+if (batucada) {
 batucada.pause();
 batucada.currentTime = 0;
+}
       cover.classList.add("fade-out");
 
       setTimeout(() => {
