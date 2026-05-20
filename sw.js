@@ -1,4 +1,4 @@
-const CACHE_NAME = "mundial2026-v1.0.2";
+const CACHE_NAME = "mundial2026-v1.0.3";
 
 const ASSETS = [
   "./",
