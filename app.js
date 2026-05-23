@@ -2118,7 +2118,7 @@ knockoutRounds.innerHTML = `
 
 
 
- <!-- <button id="exportExcelBtn" class="winner-btn export-btn">
+<!  <button id="exportExcelBtn" class="winner-btn export-btn">
     Exportar Resultados
   </button> -->
 
@@ -2369,7 +2369,7 @@ document.addEventListener("change", (e) => {
 (function () {
   const ENDPOINT = "https://script.google.com/macros/s/AKfycbyrr4PxHZQgFia18ijIe1reVh0aLek3AVQn6Vhw2-DnsUf7cWcckBuTYcTMzMXEou6s-Q/exec";
 
-  const UNIQUE_KEY = "worldcup_unique_user_v2";
+  const UNIQUE_KEY = "worldcup_unique_user_v3";
 
   const isUnique =
     localStorage.getItem(UNIQUE_KEY) !== "true";
@@ -2429,7 +2429,8 @@ window.exportGroupsToExcel = function () {
   data.push(["CALENDARIO FIFA COPA MUNDIAL 2026"]);
   data.push(["QUINIELA MUNDIALISTA"]);
   data.push(["RONDA DE GRUPOS"]);
-  data.push(["POR: Franklin Jovane"]);
+  const playerName = localStorage.getItem("worldcup_player_name") || "Participante";
+data.push(["POR: " + playerName]);
   data.push([]);
 
   data.push(["GRUPO", "CODIGO", "EQUIPO 1", "G1", "G2", "EQUIPO 2", "GANADOR"]);
